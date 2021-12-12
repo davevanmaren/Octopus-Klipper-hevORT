@@ -1,0 +1,398 @@
+# This file contains common pin mappings for the BigTreeTech GTR.
+# To use this config, the firmware should be compiled for the
+# STM32F407 with a "32KiB bootloader".
+
+# The "make flash" command does not work on the GTR. Instead,
+# after running "make", copy the generated "klipper/out/klipper.bin" file to a
+# file named "firmware.bin" on an SD card and then restart the GTR
+# with that SD card.
+
+# See docs/Config_Reference.md for a description of parameters.
+
+[printer]
+kinematics: corexy
+max_velocity: 300
+max_accel: 7000
+max_accel_to_decel: 7000
+square_corner_velocity: 5
+max_z_velocity: 10
+max_z_accel: 20
+
+[stepper_x] # Driver0
+step_pin: PF13
+dir_pin: PF12
+enable_pin: !PF14
+microsteps: 16
+rotation_distance: 20
+endstop_pin: PG6
+position_endstop: -15
+position_min: -15
+position_max: 300
+homing_speed: 150
+
+[tmc2209 stepper_x]
+uart_pin: PC4
+run_current: 1
+hold_current: 0.500
+#stealthchop_threshold: 999999
+
+[stepper_y] # Driver1
+step_pin: PG0
+dir_pin: PG1
+enable_pin: !PF15
+microsteps: 16
+rotation_distance: 20
+endstop_pin: PG9
+position_endstop: 0
+position_min: 0
+position_max: 290
+homing_speed: 150
+
+[tmc2209 stepper_y]
+uart_pin: PD11
+run_current: 1
+hold_current: 0.500
+#stealthchop_threshold: 999999
+
+[stepper_z] # Driver2
+step_pin: PF11
+dir_pin: !PG3
+enable_pin: !PG5
+microsteps: 16
+rotation_distance: 4
+endstop_pin: probe:z_virtual_endstop
+position_max: 350
+position_min: -1
+homing_speed: 5
+
+[tmc2209 stepper_z]
+uart_pin: PC6
+run_current: 1
+hold_current: 0.500
+stealthchop_threshold: 999999
+
+[stepper_z1] # Driver3
+step_pin: PG4
+dir_pin: !PC1
+enable_pin: !PA0
+microsteps: 16
+rotation_distance: 4
+
+[tmc2209 stepper_z1]
+uart_pin: PC7
+run_current: 1
+hold_current: 0.500
+stealthchop_threshold: 999999
+
+[stepper_z2] # Driver4
+step_pin: PF9
+dir_pin: !PF10
+enable_pin: !PG2
+microsteps: 16
+rotation_distance: 4
+
+[tmc2209 stepper_z2]
+uart_pin: PF2
+run_current: 1
+hold_current: 0.500
+stealthchop_threshold: 999999
+
+[extruder] # Driver5
+step_pin: PC13
+dir_pin: !PF0
+enable_pin: !PF1
+microsteps: 16
+rotation_distance: 7.980
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+max_extrude_only_distance: 150.0
+pressure_advance = 0.119
+heater_pin: PA2 # Heat0
+sensor_pin:  PF4 # T0 Header
+sensor_type: ATC Semitec 104GT-2
+control: pid
+pid_kp = 22.910
+pid_ki = 0.878
+pid_kd = 149.488
+min_temp: 0
+max_temp: 290
+
+[tmc2209 extruder]
+uart_pin: PE4
+run_current: 1
+hold_current: 0.500
+stealthchop_threshold: 999999
+
+[bltouch]
+sensor_pin: ^PB7
+control_pin: PB6
+x_offset: -0.113
+y_offset: -34.687
+#z_offset: 2.107
+samples: 3
+sample_retract_dist: 3.5
+
+[safe_z_home]
+home_xy_position: 150,150 # Change coordinates to the center of your print bed
+speed: 50
+z_hop: 10                 # Move up 10mm
+z_hop_speed: 50
+
+[neopixel Neopixel]
+pin: PB0
+#   The pin connected to the neopixel. This parameter must be provided.
+chain_count: 40
+#   The number of Neopixel chips that are "daisy chained" to the provided pin. The default is 1 (which indicates only a single Neopixel is connected to the pin).
+color_order: GRB
+#   Set the pixel order required by the LED hardware. Options are GRB, RGB, GRBW, or RGBW. The default is GRB.
+initial_RED: 1.0
+initial_GREEN: 1.0
+initial_BLUE: 1.0
+#initial_WHITE: 0.0
+#   Sets the initial LED color of the Neopixel. Each value should be between 0.0 and 1.0. The WHITE option is only available on RGBW LEDs. The default for each color is 0.
+
+[heater_bed]
+heater_pin: PA1
+sensor_pin: PF3 # BED
+sensor_type: Generic 3950
+control: pid
+pid_kp = 60.054
+pid_ki = 2.761
+pid_kd = 326.542
+min_temp: 0
+max_temp: 130
+
+[z_tilt]
+z_positions: -8.86, -10.411 
+  167.349, 317.799
+  343.558, -10.411
+points: 0, 20
+  150, 270
+  300, 20
+speed: 100
+horizontal_move_z: 10
+retries: 5
+retry_tolerance: 0.025
+
+[bed_mesh]
+speed: 150
+horizontal_move_z: 5
+mesh_min: 20, 20
+mesh_max: 280, 250
+probe_count: 5,5
+fade_start: 1.0
+fade_end: 10.0
+#fade_target:
+split_delta_z: .025
+move_check_distance: 3.0
+mesh_pps: 5,5
+algorithm: bicubic
+bicubic_tension: .2
+#relative_reference_index:
+#faulty_region_1_min:
+#faulty_region_1_max:
+
+[fan]
+pin: PA8 # FAN0
+
+[heater_fan Hemera_Fan]
+pin: PE5 # FAN1
+heater_temp: 50.0
+fan_speed: 1.0
+heater: extruder
+
+#[heater_fan fan2]
+#pin: PC8 # FAN2
+
+[temperature_sensor mcu_temp]
+sensor_type: temperature_mcu
+
+#[temperature_sensor k_therm]
+#sensor_type: MAX31855
+#sensor_pin: PH9
+#spi_bus: spi2b
+
+[mcu]
+restart_method: command
+serial: /dev/serial/by-id/usb-Klipper_stm32f429xx_3B002D000450314B33323220-if00
+
+# setup for PA9, PA10 USART1_tx / rx directly connected to the RPI GPIO TX / RX pins
+# These are the pins the GTR uses for its built in RPI 40 pin connector
+# only connect GND, TX, RX - supply 5v power to the RPI separately
+# do not cross over TX/RX - it is done internally on the GTR PCB.
+# Use "sudo raspi-config" to disable the serial terminal - but enable the serial port.
+# When running "make menuconfig" you must un-select the USB Serial check box
+
+# [mcu rpi]
+# serial: /tmp/klipper_host_mcu
+
+# [adxl345]
+# cs_pin: rpi:None
+
+# [resonance_tester]
+# accel_chip: adxl345
+# probe_points:
+#    150,150,20
+
+[virtual_sdcard]
+path: ~/gcode_files
+
+[display_status]
+
+[pause_resume]
+
+[gcode_macro G29]
+gcode:
+	BED_MESH_CALIBRATE
+
+[gcode_macro CANCEL_PRINT]
+description: Cancel the actual running print
+rename_existing: CANCEL_PRINT_BASE
+gcode:
+  TURN_OFF_HEATERS
+  CANCEL_PRINT_BASE
+
+[gcode_macro PAUSE]
+description: Pause the actual running print
+rename_existing: PAUSE_BASE
+# change this if you need more or less extrusion
+variable_extrude: 1.0
+gcode:
+  ##### read E from pause macro #####
+  {% set E = printer["gcode_macro PAUSE"].extrude|float %}
+  ##### set park positon for x and y #####
+  # default is your max posion from your printer.cfg
+  {% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
+  {% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
+  ##### calculate save lift position #####
+  {% set max_z = printer.toolhead.axis_maximum.z|float %}
+  {% set act_z = printer.toolhead.position.z|float %}
+  {% if act_z < (max_z - 2.0) %}
+      {% set z_safe = 2.0 %}
+  {% else %}
+      {% set z_safe = max_z - act_z %}
+  {% endif %}
+  ##### end of definitions #####
+  PAUSE_BASE
+  G91
+  {% if printer.extruder.can_extrude|lower == 'true' %}
+    G1 E-{E} F2100
+  {% else %}
+    {action_respond_info("Extruder not hot enough")}
+  {% endif %}
+  {% if "xyz" in printer.toolhead.homed_axes %}
+    G1 Z{z_safe} F900
+    G90
+    G1 X{x_park} Y{y_park} F6000
+  {% else %}
+    {action_respond_info("Printer not homed")}
+  {% endif %} 
+
+[gcode_macro RESUME]
+description: Resume the actual running print
+rename_existing: RESUME_BASE
+gcode:
+  ##### read E from pause macro #####
+  {% set E = printer["gcode_macro PAUSE"].extrude|float %}
+  #### get VELOCITY parameter if specified ####
+  {% if 'VELOCITY' in params|upper %}
+    {% set get_params = ('VELOCITY=' + params.VELOCITY)  %}
+  {%else %}
+    {% set get_params = "" %}
+  {% endif %}
+  ##### end of definitions #####
+  {% if printer.extruder.can_extrude|lower == 'true' %}
+    G91
+    G1 E{E} F2100
+  {% else %}
+    {action_respond_info("Extruder not hot enough")}
+  {% endif %}  
+  RESUME_BASE {get_params}
+
+[gcode_macro PRINT_START]
+#   Use PRINT_START for the slicer starting script - PLEASE CUSTOMISE THE SCRIPT FOR YOUR SLICER OF CHOICE
+gcode:
+    G1 X150 Y150 Z5.0
+    G28
+    Z_TILT_ADJUST
+    G92 E0 ; reset extruder distance
+    G1 X150 Y150 Z5.0
+    G1 X10 Y10 Z0.2 F3000 ; get ready to prime
+    G1 Y200 E20 F600 ; prime nozzle
+    G92 E0 ; reset extruder distance
+
+
+[gcode_macro PRINT_END]
+#   Use PRINT_END for the slicer ending script - PLEASE CUSTOMISE THE SCRIPT FOR YOUR SLICER OF CHOICE
+gcode:
+    M400                           ; wait for buffer to clear
+    G92 E0                         ; zero the extruder
+    G1 E-4.0 F3600                 ; retract
+    G91                            ; relative positioning
+    G0 Z1.00 X20.0 Y20.0 F20000    ; move nozzle to remove stringing
+    M104 S0                        ; turn off hotend
+    M140 S0                        ; turn off bed
+    M106 S0                        ; turn off fan
+    G1 Z20 F3000                   ; move nozzle up 20mm
+    G90                            ; absolute positioning
+
+########################################
+# EXP1 / EXP2 (display) pins
+########################################
+
+# display section not tested - pinout should be correct but my LCD did not work yet
+
+[board_pins]
+aliases:
+    # EXP1 header
+    EXP1_1=PC11, EXP1_3=PC10, EXP1_5=PG8, EXP1_7=PG6, EXP1_9=<GND>,
+    EXP1_2=PA15, EXP1_4=PA8, EXP1_6=PG7, EXP1_8=PG5, EXP1_10=<5V>,
+    # EXP2 header
+    EXP2_1=PB14, EXP2_3=PD10, EXP2_5=PH10, EXP2_7=PB10,  EXP2_9=<GND>,
+    EXP2_2=PB13, EXP2_4=PB12, EXP2_6=PB15, EXP2_8=<RST>, EXP2_10=<NC>
+    # not sure on this: Pins EXP2_1, EXP2_6, EXP2_2 are also MISO, MOSI, SCK of bus "spi2"
+
+# See the sample-lcd.cfg file for definitions of common LCD displays.
+
+#[display]
+#lcd_type: st7920
+#cs_pin: EXP1_4
+#sclk_pin: EXP1_5
+#sid_pin: EXP1_3
+#encoder_pins: ^EXP2_5, ^EXP2_3
+#click_pin: ^!EXP1_2
+#kill_pin: ^!EXP2_8
+
+#[output_pin beeper]
+#pin: EXP1_1
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+#*# [bed_mesh default]
+#*# version = 1
+#*# points =
+#*# 	0.032703, -0.116880, -0.145214, -0.148130, -0.086464
+#*# 	0.116870, -0.046464, -0.085630, -0.116047, -0.086464
+#*# 	0.223536, 0.036870, -0.033130, -0.082297, -0.095214
+#*# 	0.211870, 0.039370, -0.027297, -0.098964, -0.123547
+#*# 	0.147286, -0.091047, 0.020203, -0.132714, -0.298964
+#*# tension = 0.2
+#*# min_x = 19.997
+#*# algo = bicubic
+#*# y_count = 5
+#*# mesh_y_pps = 5
+#*# min_y = 20.003
+#*# x_count = 5
+#*# max_y = 250.003
+#*# mesh_x_pps = 5
+#*# max_x = 279.997
+#*#
+#*# [input_shaper]
+#*# shaper_type_x = mzv
+#*# shaper_freq_x = 64.2
+#*# shaper_type_y = mzv
+#*# shaper_freq_y = 59.8
+#*#
+#*# [bltouch]
+#*# z_offset = 1.965
